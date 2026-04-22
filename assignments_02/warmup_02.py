@@ -1,10 +1,4 @@
 # # --- scikit-learn API ---
-# ````
-# #Q1 
-from xml.parsers.expat import model
-
-from pyexpat import model
-
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -123,7 +117,7 @@ print(f"y_test shape: {y_test.shape}\n")
 
 print("Linear Regression Question 3\n")
 # Fit a LinearRegression model to your training data from Question 2.
-#  Print the slope and intercept. Then predict on the test set and print:
+# Print the slope and intercept. Then predict on the test set and print:
 # RMSE: np.sqrt(np.mean((y_pred - y_test) ** 2))
 # R² on the test set: model.score(X_test, y_test)
 # Add a comment interpreting the slope in plain English -- what does it mean for medical costs?

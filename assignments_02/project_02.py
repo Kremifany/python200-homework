@@ -1,19 +1,14 @@
-# If you were loading this with pd.read_csv(), what parameter would you need to specify beyond the filename? Write that observation as a comment at the top of your script before you write the load call.
+# If you were loading this with pd.read_csv(), what parameter would you need to specify beyond the filename? 
+# Write that observation as a comment at the top of your script before you write the load call.
 #I would need to specify delimiter ";" because the data is separated by semicolons instead of commas.
 # Load the dataset with the correct separator. Print the shape, the first five rows, and the data types of all columns.
-from asyncio import Task
-from statistics import correlation
-
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import train_test_split, GridSearchCV
-from sklearn.preprocessing import MinMaxScaler
-from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, mean_squared_error, r2_score
 import matplotlib.pyplot as plt
 import seaborn as sns
-from sqlalchemy import column
 data = pd.read_csv("student_performance_math.csv", sep=';')
 print(data.shape)
 print(data.head())  
