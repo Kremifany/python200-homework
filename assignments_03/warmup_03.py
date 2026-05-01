@@ -17,6 +17,7 @@ from sklearn.metrics import (
     ConfusionMatrixDisplay
 )
 from sklearn.linear_model import LogisticRegression
+from sklearn.multiclass import OneVsRestClassifier
 from sklearn.inspection import DecisionBoundaryDisplay
 
 warnings.filterwarnings("ignore", category=RuntimeWarning)
@@ -193,11 +194,16 @@ print("Logistic Regression Question 1\n")
 # Add a comment: what happens to the total coefficient magnitude as C increases?
 # What does this tell you about what regularization is doing?
 
-# Iris has 3 classes, so we need a solver that supports multiclass : lbfgs
+# Iris has 3 classes; liblinear only handles binary LR, so I use OneVsRestClassifier
+# (one liblinear model per class), as sklearn recommends for multiclass + liblinear.
 for C in (0.01, 1.0, 100.0):
-    log_reg_model = LogisticRegression(max_iter=1000, random_state=42, C=C, solver="lbfgs")
+    log_reg_model = OneVsRestClassifier(
+        LogisticRegression(
+            max_iter=1000, random_state=42, C=C, solver="liblinear"
+        )
+    )
     log_reg_model.fit(X_train_scaled, y_train)
-    coef_size = np.abs(log_reg_model.coef_).sum()
+    coef_size = sum(np.abs(est.coef_).sum() for est in log_reg_model.estimators_)
     print(f"C value is {C:6g} size of all coefficients = {coef_size:.6f}")
 
 # As C increases, the total coefficient magnitude increases.
