@@ -10,6 +10,7 @@ from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 from sklearn.cluster import KMeans
 from sklearn.datasets import make_blobs
 
+
 years  = np.array([1, 2, 3, 5, 7, 10]).reshape(-1, 1)
 salary = np.array([45000, 50000, 60000, 75000, 90000, 120000])
 
@@ -41,6 +42,7 @@ print("---scikit-learn Question 2---\n")
 
 x = np.array([10, 20, 30, 40, 50])
 
+print(f"1d array x shape: {x.shape}")
 x2d = x.reshape(-1, 1)
 
 print(f"x 2d array: {x2d.shape}")
