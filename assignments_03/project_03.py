@@ -15,7 +15,9 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import (
     accuracy_score,
-    classification_report
+    classification_report,
+    confusion_matrix,
+    ConfusionMatrixDisplay,
 )
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.pipeline import Pipeline
@@ -200,12 +202,14 @@ X_test_pca  = pca.transform(X_test_scaled)[:, :n]
 print("Task 3: A Classifier Comparison")
 # Build and evaluate the following five classifiers.
 #  For each, print the accuracy and the full classification report.
+task3_results = {}
 
 # KNeighborsClassifier(n_neighbors=5) trained on the unscaled data
 knn_on_unscaledData = KNeighborsClassifier(n_neighbors=5)
 knn_on_unscaledData.fit(X_train, y_train)
 preds = knn_on_unscaledData.predict(X_test)
 knn_acc_unscaled =accuracy_score(y_test, preds)
+task3_results["KNN (unscaled)"] = (knn_acc_unscaled, preds)
 print("Accuracy knn_on_unscaledData:", knn_acc_unscaled)
 print("\nKNN Classifier full classification report:\n",classification_report(y_test, preds))
 
@@ -214,6 +218,7 @@ knn_on_scaledData = KNeighborsClassifier(n_neighbors=5)
 knn_on_scaledData.fit(X_train_scaled, y_train)
 preds = knn_on_scaledData.predict(X_test_scaled)
 knn_acc_scaled=accuracy_score(y_test, preds)
+task3_results["KNN (scaled)"] = (knn_acc_scaled, preds)
 print("Accuracy knn_on_scaledData:", knn_acc_scaled)
 print("\nKNN Classifier full classification report:\n",classification_report(y_test, preds))
 
@@ -222,6 +227,7 @@ knn_on_PCAData = KNeighborsClassifier(n_neighbors=5)
 knn_on_PCAData.fit(X_train_pca, y_train)
 preds = knn_on_PCAData.predict(X_test_pca)
 knn_acc_pca=accuracy_score(y_test, preds)
+task3_results["KNN (PCA)"] = (knn_acc_pca, preds)
 print("Accuracy knn_on_PCAData:", knn_acc_pca)
 print("\nKNN Classifier full classification report:\n",classification_report(y_test, preds))
 
@@ -271,7 +277,9 @@ print(f"\nChosen depth for production (by best test accuracy): {best_depth_label
 dectree_best = DecisionTreeClassifier(max_depth=best_depth, random_state=42)
 dectree_best.fit(X_train, y_train)
 preds = dectree_best.predict(X_test)
-print("Accuracy DecisionTree (chosen):", accuracy_score(y_test, preds))
+dt_best_acc = accuracy_score(y_test, preds)
+task3_results[f"DecisionTree (depth={best_depth_label})"] = (dt_best_acc, preds)
+print("Accuracy DecisionTree (chosen):", dt_best_acc)
 print("\nfull classification report for decision trees:\n", classification_report(y_test, preds))
 
 # LogisticRegression(C=1.0, max_iter=1000, solver='liblinear') trained on the scaled data,
@@ -281,21 +289,23 @@ print("\nfull classification report for decision trees:\n", classification_repor
 log_reg_scaled = LogisticRegression(C=1.0, max_iter=1000, solver="liblinear", random_state=42)
 log_reg_scaled.fit(X_train_scaled, y_train)
 preds_lr_scaled = log_reg_scaled.predict(X_test_scaled)
+acc_scaled = accuracy_score(y_test, preds_lr_scaled)
+task3_results["LogisticRegression (scaled)"] = (acc_scaled, preds_lr_scaled)
 
-print("Accuracy LogisticRegression scaled:", accuracy_score(y_test, preds_lr_scaled))
+print("Accuracy LogisticRegression scaled:", acc_scaled)
 print("\nLogisticRegression scaled report:\n", classification_report(y_test, preds_lr_scaled))
 
 # LogisticRegression on PCA-reduced data
 log_reg_pca = LogisticRegression(C=1.0, max_iter=1000, solver="liblinear", random_state=42)
 log_reg_pca.fit(X_train_pca, y_train)
 preds_lr_pca = log_reg_pca.predict(X_test_pca)
+acc_pca = accuracy_score(y_test, preds_lr_pca)
+task3_results["LogisticRegression (PCA)"] = (acc_pca, preds_lr_pca)
 
-print("Accuracy LogisticRegression PCA:", accuracy_score(y_test, preds_lr_pca))
+print("Accuracy LogisticRegression PCA:", acc_pca)
 print("\nLogisticRegression PCA report:\n", classification_report(y_test, preds_lr_pca))
 
 
-acc_scaled = accuracy_score(y_test, preds_lr_scaled)
-acc_pca = accuracy_score(y_test, preds_lr_pca)
 print("\nComparison:", "Scaled >= PCA" if acc_scaled >= acc_pca else "PCA > Scaled")
 # Q: -- compare the two
 # A: Logistic Regression scaled performed better with accuracy of 0.929 then Logistic Regression PCA with accuracy of 0.918
@@ -310,8 +320,40 @@ rf.fit(X_train, y_train)
 
 
 preds_rf = rf.predict(X_test)
-print("Accuracy RandomForest:", accuracy_score(y_test, preds_rf))
+rf_acc = accuracy_score(y_test, preds_rf)
+task3_results["RandomForest"] = (rf_acc, preds_rf)
+print("Accuracy RandomForest:", rf_acc)
 print("\nRandomForest report:\n", classification_report(y_test, preds_rf))
+
+best_model_name, (best_model_acc, best_model_preds) = max(
+    task3_results.items(), key=lambda x: x[1][0]
+)
+print(f"\nBest Task 3 model: {best_model_name} (accuracy={best_model_acc:.4f})")
+
+cm = confusion_matrix(y_test, best_model_preds)
+tn, fp, fn, tp = cm.ravel()
+
+disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=["ham (0)", "spam (1)"])
+disp.plot(cmap="Blues", values_format="d")
+plt.title(f"Confusion Matrix - Best Model: {best_model_name}")
+plt.tight_layout()
+os.makedirs("outputs", exist_ok=True)
+plt.savefig("outputs/best_model_confusion_matrix.png", bbox_inches="tight")
+plt.show()
+
+# For spam filtering, false positives (ham marked as spam) are "less plesant" because users can miss
+# important not spam email; this run checks whether that or false negatives (spam getting through) is
+# more common for the best model.
+if fp > fn:
+    print(
+        f"Error analysis (best model): false positives are more frequent ({fp}) than false negatives ({fn})."
+    )
+elif fn > fp:
+    print(
+        f"Error analysis (best model): false negatives are more frequent ({fn}) than false positives ({fp})."
+    )
+else:
+    print(f"Error analysis (best model): false positives and false negatives are tied ({fp} each).")
 
 feature_names = X.columns.to_list()
 dt_importances = pd.Series(dectree_best.feature_importances_, index=feature_names).sort_values(ascending=False)
