@@ -26,9 +26,13 @@ print("-------Concepts Question 2-------")
 print("------Concepts Question 3------")
 steps = [
     "Generate a response from the LLM",
-    
+    "Extract text from source documents",
+    "Receive the user's query",
+    "Retrieve the most relevant chunks",
+    "Convert text chunks into embeddings",
     "Inject retrieved chunks into the prompt",
-   
+    "Split text into chunks",
+    "Embed the user's query",
 ]
 
 # Correrect order and each step description:
@@ -192,6 +196,7 @@ simple_keyword_retrieval(query, documents, verbose=True)
 # A: The document loyalty.txt was selected because the overlap=1 -> 'your' and the name
 #    alphabetically was before the others in function sort reverse-alphabetical and not based
 #    on true relevance
+# hours.txt, hiring.txt, and loyalty.txt all scored 1. hours.txt matched weekends (on-topic). The others only matched your (not about hours). The function should pick hours.txt, but scores.sort(reverse=True) on (score, name, …) breaks ties by filename, so loyalty.txt was chosen incorrectly. Keyword RAG needs a better tie-break (e.g. prefer more overlapping words, or rank by which matched tokens are more specific).
 
 
 print("-------Keyword Question 2------")
@@ -199,12 +204,15 @@ query = "Do you have anything without caffeine?"
 
 simple_keyword_retrieval(query, documents, verbose=True)
 # OUTPUT:
-# Which document was selected: no document was selected
+# Which document was selected: None (no document had overlap score > 0; function returned no match).
 # Whether keyword RAG got this right — and why or why not?
-# A: Yes he got it right, there are no overlaps
+# A: No. Overlap was 0 for every document because none of the texts contain words like
+#    "caffeine" or "without." So keyword RAG returned nothing, even though menu.txt is the
+#    most relevant file for drink questions. Overlap cannot handle synonyms it only counts exact shared tokens.
 # What kind of retrieval would do better here?
-# A: I thinks semantic keyword will do better here
-
+# A: Semantic RAG with embeddings and a vector store 
+#    the query and menu chunks can match by meaning even when
+#    the exact word "caffeine" never appears.
 print("-------Keyword Question 3------")
 query = "How do I sign up for rewards?"
 # Before running any code, predict which document will be selected for the query below. 
