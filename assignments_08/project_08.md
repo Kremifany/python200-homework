@@ -61,4 +61,4 @@ Scenario B VM costs 997.2x more than Scenario A
 
 The calculated costs matched the Pricing Calculator exactly: $2.24/month for the B1s and $2,233.80/month for the NC6s v3 VM. That makes sense because the calculator is doing the same math (hourly rate x hours). The script only covers the VMs, so it does not include the SQL database or storage from Scenario B.
 
----
+![Cloud Shell output](images/shell_image.png)
