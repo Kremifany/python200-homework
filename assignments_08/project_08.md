@@ -28,7 +28,7 @@ Together that is about $2,993 per month, or almost $36,000 a year
 - The SQL database was more expensive than I thought ($737/month), and a big chunk of that is just the SQL license.
 - Hours matter a lot. The small VM is cheap partly because it only runs 8 hours a day on weekdays. Leaving the GPU VM on 24/7 is what makes it so expensive, so shutting VMs down when you are not using them would save a lot of money.
 
----
+
 
 # Run this in Azure Cloud Shell after completing the Cost Analysis above.
 
@@ -48,3 +48,17 @@ print(f"Scenario B (GPU VM only):       ${cost_b:.2f}")
 
 if cost_a > 0:
     print(f"Scenario B VM costs {cost_b / cost_a:.1f}x more than Scenario A")
+
+
+### Script output
+
+I ran `project_08.py` in Azure Cloud Shell and it printed:
+
+=== Monthly Cost Estimates ===
+Scenario A (lightweight):       $2.24
+Scenario B (GPU VM only):       $2233.80
+Scenario B VM costs 997.2x more than Scenario A
+
+The calculated costs matched the Pricing Calculator exactly: $2.24/month for the B1s and $2,233.80/month for the NC6s v3 VM. That makes sense because the calculator is doing the same math (hourly rate x hours). The script only covers the VMs, so it does not include the SQL database or storage from Scenario B.
+
+---
