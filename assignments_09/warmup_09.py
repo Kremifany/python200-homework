@@ -29,8 +29,23 @@ print("----Azure Authentication Question 3----")
 # you would diagnose each.
 
 # A:
-# Cause 1 i would say could be a az login didnt wenrt through
-# Cause 2 Managed Identity is not enabled or not reachable
+# Cause 1: I probably forgot to log in with Azure CLI, or my login expired.
+# When I run the script on my laptop, DefaultAzureCredential tries different ways to
+# authenticate and if `az login` was never done (or MFA was needed and it failed),
+# none of them work.
+# How I would diagnose it: I would look at the error message and find the part that
+# says "Attempted credentials". If it says AzureCliCredential and "Please run az login",
+# that tells me the problem. Then I would run `az account show` in the terminal — if
+# that fails too, I would run `az login` or `az login --tenant <TENANT_ID>` and try
+# the script again.
+#
+# Cause 2: If the script is running on an Azure VM or container, managed identity
+# might not be turned on, or the metadata endpoint (IMDS) is not reachable.
+# The pipeline can't use `az login` because there is no person there to sign in.
+# How I would diagnose it: I would go to the Azure portal and check if managed identity
+# is enabled on that VM/App Service/container. I would also try to test IMDS from the
+# resource itself (like curling the metadata token URL). If login works but I still
+# get permission errors, I would check that the identity has the right RBAC roles.
 
 print("----Blob Storage----\n-----Blob Storage Question 1----")
 # In a comment block, describe the three-level hierarchy of Azure Blob Storage in your own words. 
@@ -50,6 +65,14 @@ print("----Blob Storage Question 2----")
 # A: here I would use the SQL table because it's stuctured and queries easily
 # A computer vision model produces image embeddings as NumPy arrays. You need to save them between pipeline runs.
 # A: I would store the arrays in blob container because it does not have table stucture
+
+print("----Blob Storage Question 3----")
+
+
+def list_container(container_client):
+    for blob in container_client.list_blobs():
+        print(f"{blob.name}  {blob.size} bytes")
+
 
 print("----Blob Storage Question 4----")
 
