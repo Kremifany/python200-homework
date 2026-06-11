@@ -732,12 +732,11 @@ print(result)
 #  This means that as traffic density increases, average speed tends to decrease.
 
 print("------Q6-------")
-# After Q5 runs, print the full messages list. 
-# Each item in the list is a dictionary with a "role" key. 
-# Add a comment above the print that identifies what each role (system, user, assistant, tool)
-# represents in the ReAct loop.
-# Hint:
-
+# Each message role in the ReAct loop:
+# - system: the starting instructions that tell the agent how to behave
+# - user: the person's question or request
+# - assistant: the model's reply — either a final answer, or a tool_calls request (REASON/ACT step)
+# - tool: the output sent back after a tool runs (OBSERVE step), so the model can read the result and continue
 import json
 print(json.dumps(messages, indent=2, default=str))
 
@@ -978,10 +977,13 @@ print("-------------------response_code------------\n", response_code)
 
 # Print both responses, then add a comment block answering:
 # What did each agent actually produce? Did the ToolCallingAgent change the dot color? Did the CodeAgent?
-# A: Each agent produces a scattered plot of avg_heart_rate vs duration_minbut tooCallingAgent did it with the blue dots and claimed it was sucessfull greeen dots and 
-# codingAgent did produce green dots
+# A: ToolCallingAgent called plot_data and made a scatter plot of avg_heart_rate vs duration_min,
+# but the dots were the default blue color — plot_data does not let us set color, so it did NOT
+# make green dots even though the prompt asked for green. CodeAgent wrote its own matplotlib code
+# instead of using plot_data, and that plot actually had green dots because it could set color='green'.
 # What does this reveal about when each type of agent is more useful?
-# for more specific tasks coding agent and for more general toolCallingAgent
+# A: ToolCallingAgent is good when the existing tools already do exactly what we need. CodeAgent
+# is better when we need custom styling or anything the tools cannot control.
 
 # Q9
 # Add a comment block at the bottom of your warmup file answering both questions:
