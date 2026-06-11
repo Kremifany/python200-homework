@@ -101,8 +101,15 @@ print("Total emails:", len(df))
 counts = df["spam_label"].value_counts()
 print("Class counts:\n", counts)
 print("Class %:\n", (counts / len(df) * 100).round(2))
-# What does that balance (or imbalance) mean for how you should interpret a raw accuracy score?
-# baseline accuracy if you always predict the majority class (ham)
+
+print("----Task 1----")
+# Project Task 1: What does that balance (or imbalance) mean for how you should
+# interpret a raw accuracy score?
+# A: The classes are not balanced — there are way more ham emails (2,788) than spam
+# (1,813). So if I just look at raw accuracy, it can look good even when the model
+# is mostly just guessing ham, because ham is the majority class. The baseline is
+# 0.606, so I always need to compare my accuracy to that number instead of taking
+# raw accuracy at face value.
 print("Majority-class baseline accuracy:", (counts.max() / len(df)).round(3))
 # Now explore how a few key features differ between spam and ham.
 # For each of word_freq_free, char_freq_!, and capital_run_length_total,
