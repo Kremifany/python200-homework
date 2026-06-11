@@ -46,8 +46,20 @@ today = date.today().isoformat()
 credential = DefaultAzureCredential()
 container = ContainerClient(ACCOUNT_URL, CONTAINER, credential=credential)
 
-raw = container.download_blob(f"raw/{today}/weather.json").readall()
-data = json.loads(raw.decode("utf-8"))
+FALLBACK_PATH = (
+    Path(__file__).resolve().parents[1] / "assignments" / "resources" / "weather_raw.json"
+)
+blob_path = f"raw/{today}/weather.json"
+
+try:
+    raw = container.download_blob(blob_path).readall()
+    data = json.loads(raw.decode("utf-8"))
+    print(f"Loaded weather data from blob: {blob_path}")
+except Exception as error:
+    print(f"Could not download {blob_path} ({type(error).__name__}). Using fallback file.")
+    with FALLBACK_PATH.open(encoding="utf-8") as fallback_file:
+        data = json.load(fallback_file)
+    print(f"Loaded weather data from {FALLBACK_PATH}")
 hourly = data["hourly"]
 records = []
 for i in range(len(hourly["time"])):
