@@ -126,9 +126,8 @@ def load(records: list, blob_path: str) -> None:
         payload,
         overwrite=True
     )
-    logger.info(
-        f"Loaded {len(records)} records to {blob_path}"
-    )
+    print(f"Loaded {len(payload)} bytes to {blob_path}")
+    logger.info(f"Loaded {len(payload)} bytes to {blob_path}")
 
 
 # Flow
