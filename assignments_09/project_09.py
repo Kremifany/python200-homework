@@ -1,3 +1,4 @@
+# video link https://youtu.be/ickD5xGperU
 print("----Part 2: Project -- Extract + Load Pipeline----")
 
 import json
@@ -103,4 +104,3 @@ if __name__ == "__main__":
     print("----Step 5: Read Back-----")
     read_weather_data(blob_path)
 
-# video link https://youtu.be/ickD5xGperU
