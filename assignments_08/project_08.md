@@ -1,11 +1,7 @@
 # Project 08 -- Intro and Cost Analysis
 
-## Video Link for azure 
-https://youtu.be/q7wB3KmeUXw
-
----
-## Cost analysis video link
-https://youtu.be/5RT4qGqLrRE
+## Video Link
+https://youtu.be/Iq7P_HloWo0
 
 ## Cost Summary
 
