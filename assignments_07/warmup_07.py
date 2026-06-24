@@ -732,8 +732,8 @@ print(result)
 #  This means that as traffic density increases, average speed tends to decrease.
 
 print("------Q6-------")
-# Each message role in the ReAct loop:
-# - system: the starting instructions that tell the agent how to behave
+# Each item in the list is a dictionary with a "role" key.
+# - system: starting instructions that tell the agent how to behave
 # - user: the person's question or request
 # - assistant: the model's reply — either a final answer, or a tool_calls request (REASON/ACT step)
 # - tool: the output sent back after a tool runs (OBSERVE step), so the model can read the result and continue
