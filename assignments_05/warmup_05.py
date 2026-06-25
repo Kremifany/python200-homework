@@ -269,6 +269,23 @@ print(responses)
 
 # Then send a second prompt using a passage that is not a set of instructions
 # (any sentence or two of regular prose). Confirm that the model returns "No steps provided." 
+prose_text = (
+    "The sunset painted the sky in shades of orange and pink. "
+    "Birds flew quietly toward the horizon."
+)
+prompt_prose = f"""
+You will be given text inside triple backticks.
+If it contains step-by-step instructions, rewrite them as a numbered list.
+If it does not contain instructions, respond with exactly: "No steps provided."
+
+```{prose_text}```
+"""
+responses_prose = get_completion(prompt_prose, model="gpt-4o-mini")
+print(responses_prose)
+
+# OUTPUT (prose prompt):
+# No steps provided.
+
 # Add a comment: What problem do delimiters help prevent?
 # Delimeters ment to prevent confusin text for the model to work on with actual instructions to the model
 
