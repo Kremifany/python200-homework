@@ -141,7 +141,7 @@ print("---Task 3: Cover Letter Generator---")
 # Write a generate_cover_letter() function that takes a job title and a brief description of the user's background, 
 # and returns a cover letter opening paragraph.
 # Use few-shot prompting: include at least two examples of strong cover letter openings in your prompt before
-#  asking for the new one. Your examples should demonstrate 
+# asking for the new one. Your examples should demonstrate 
 # the tone and style you want — confident, specific, and not generic.
 
 def generate_cover_letter(job_title: str, background: str) -> str:
@@ -204,7 +204,6 @@ def generate_cover_letter(job_title: str, background: str) -> str:
     """
 
     messages = [{"role": "user", "content": prompt}]
-    # Your code here: call get_completion() and return the result
     
     response = get_completion(messages)
 
@@ -233,7 +232,19 @@ print(f"\n COVER LETTER: \n {generate_cover_letter(job_title, background)}")
 # because I see a perfect alignment between my technical skills 
 #  and your commitment to delivering robust software solutions that truly enhance user interactions.
 
-# A: the output not feels like tailored to specific person just to spesific job title and baclground as we wanted 
+# I chose the teacher-to-UX and military-to-PM examples because they're both career changers,
+# like the QA-to-engineer case I'm testing. I wanted the model to see how you take experience from
+# one field and connect it to a totally different job, not just copy wording from one industry.
+# Putting them in different fields helps with that — the model picks up the pattern (real detail
+# from your past, then your new credential, then why this company) instead of repeating "UX words"
+# or "PM words" blindly. I also added the weak vs fixed example because telling the model "don't
+# be generic" isn't enough; showing a bad opening next to a good one makes the difference clearer.
+# Few-shot helps control tone and style because the model copies how the examples sound — confident
+# and specific, not like a template cover letter. It also pushes specificity since every example
+# sentence has something concrete (years teaching, three time zones, PMP) that couldn't belong
+# to someone else.
+
+# A: the output not feels like tailored to specific person just to spesific job title and background as we wanted 
 # A: It avoided to use other then prvided credentials
 # A: Yes output adapts if the input is changed
 

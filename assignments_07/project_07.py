@@ -267,7 +267,8 @@ if __name__ == "__main__":
     my_query_2 = "What is the average Happiness score for each Regional indicator? Sort them from highest to lowest."
     response_2 = agent.run(my_query_2, reset=False, additional_args={"df": df})
     print(response_2)
-
+    # Comment: Did this trigger tool use, code generation, or both?
+    # Code generation only. None of my tools do a groupby average, so the agent had to write Python 
 
 # --- Reflection ---
 #

@@ -30,6 +30,8 @@ for temp in temperatures:
         temperature=temp,
     )
     reply = response.choices[0].message.content
+    model_name = response.model
+    total_tokens = response.usage.total_tokens
     print(f"Answer------------- {reply}")
     print(f"Model-------------- {model_name}")
     print(f"Total tokens------- {total_tokens}")
@@ -196,16 +198,19 @@ print(responses)
 print("---Prompt Question 4 — Chain of Thought---")
 # Ask the model to solve the following problem, but instruct it to show its reasoning step by step before giving 
 # a final answer. Label the final answer clearly.
-problem = "A data engineer earns $85,000 per year. She gets a 12% raise, then 6 months later"
-"takes a new job that pays $7,500 more per year than her post-raise salary."
-"What is her final annual salary?"
+problem = (
+    "A data engineer earns $85,000 per year. She gets a 12% raise, then 6 months later "
+    "takes a new job that pays $7,500 more per year than her post-raise salary. "
+    "What is her final annual salary?"
+)
 
 prompt = f"""
-Solve the following problem, show the reasoning in format 
-step 1 :  put here the resoning
-step 2 : put here the resoning 
-step by step before giving 
-a final answer display without any **. Label the final answer clearly
+Solve the following problem. Show your reasoning step by step before giving the final answer.
+Use this format:
+step 1: put here the reasoning
+step 2: put here the reasoning
+Final Answer: <your answer here>
+
 {problem}
 """
 responses = get_completion(prompt, model="gpt-4o-mini")
@@ -264,24 +269,59 @@ print(responses)
 
 # Then send a second prompt using a passage that is not a set of instructions
 # (any sentence or two of regular prose). Confirm that the model returns "No steps provided." 
+prose_text = (
+    "The sunset painted the sky in shades of orange and pink. "
+    "Birds flew quietly toward the horizon."
+)
+prompt_prose = f"""
+You will be given text inside triple backticks.
+If it contains step-by-step instructions, rewrite them as a numbered list.
+If it does not contain instructions, respond with exactly: "No steps provided."
+
+```{prose_text}```
+"""
+responses_prose = get_completion(prompt_prose, model="gpt-4o-mini")
+print(responses_prose)
+
+# OUTPUT (prose prompt):
+# No steps provided.
+
 # Add a comment: What problem do delimiters help prevent?
 # Delimeters ment to prevent confusin text for the model to work on with actual instructions to the model
 
 print("---Ollama Question 1---")
 # In your terminal, run the following prompt using Ollama (you installed it during the lesson):
-prompt = f"""
-Explain what a large language model is in two sentences.
+# ollama run qwen3:0.6b "Explain what a large language model is in two sentences."
+
+prompt = "Explain what a large language model is in two sentences."
+response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[{"role": "user", "content": prompt}],
+)
+print(response.choices[0].message.content)
+"""
+OpenAI (gpt-4o-mini):
+A large language model is an advanced type of artificial intelligence that uses deep learning
+techniques to understand and generate human-like text based on the patterns it has learned from
+vast amounts of text data. These models can perform a variety of language-related tasks, such
+as translation, summarization, and conversation, by predicting the next word in a sentence given
+the preceding context.
+
+
+Ollama CLI output:
+$ ollama run qwen3:0.6b "Explain what a large language model is in two sentences."
+A large language model is a type of artificial intelligence that can understand and generate
+human-like text, learning from vast amounts of data to perform tasks such as language
+processing, writing, or problem-solving.
 """
 
-responses = get_completion(prompt, model="gpt-4o-mini")
-print(responses)
-
-# OpenAi:
-# A large language model is an artificial intelligence system designed to understand
-# and generate human-like text by analyzing vast amounts of written data.
-# It uses deep learning techniques, particularly neural networks,
-# to predict and produce coherent and contextually relevant language based on the input it receives.
-
-# Ollama: not enough space on disk
-
+# Q: What differences did you notice between the two responses? What is one advantage
+#    and one disadvantage of running a model locally?
+# A: OpenAI actually gave me two sentences like I asked; Ollama squeezed everything into one.
+#    OpenAI went deeper — it said deep learning, learning patterns from text, and predicting
+#    the next word from context. Ollama kept it simpler and mostly listed things it can do like writing, amd problem-solving
+#    without explaining how it works inside. Both said an LLM is AI
+#    that reads a lot of data and writes human-like text, but gpt-4o-mini felt more complete.
+#    Advantage of running locally: no API key needed and the prompt stays on the machine.
+#    Disadvantage: slower on my laptop and qwen3:0.6b didn't follow instructions as well.
 
